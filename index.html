@@ -612,14 +612,21 @@ function setSaveStatus(state, msg){
     ts.textContent= msg || 'Erreur sync — données locales OK';
   }
 }
+const SEED_DATA = {"videos": [{"m": "Déc 2025", "cl": "Fleurs Sucrées", "cat": "shop", "creation": 250, "vues": 0, "cout": 21, "videaste": 0, "spon": 40, "id": 1776020031569}, {"m": "Déc 2025", "cl": "Kerso", "cat": "food", "creation": 0, "vues": 250, "cout": 54.2, "videaste": 0, "spon": 45.29, "id": 1776020238316}, {"m": "Déc 2025", "cl": "Blotti", "cat": "food", "creation": 0, "vues": 250, "cout": 66, "videaste": 0, "spon": 37.95, "id": 1776020391454}, {"m": "Déc 2025", "cl": "Auberge Saint Maclou", "cat": "food", "creation": 0, "vues": 250, "cout": 79.5, "videaste": 0, "spon": 25.76, "id": 1776020458866}, {"m": "Jan 2026", "cl": "Tempo", "cat": "food", "creation": 0, "vues": 250, "cout": 168, "videaste": 0, "spon": 55.89, "id": 1776020554470, "datePub": "", "dateFactC": "", "dateFactV": ""}, {"m": "Jan 2026", "cl": "Accordéon", "cat": "food", "creation": 0, "vues": 250, "cout": 60, "videaste": 0, "spon": 42.4, "id": 1776020698408}, {"m": "Jan 2026", "cl": "Cocorico", "cat": "food", "creation": 0, "vues": 250, "cout": 69.1, "videaste": 80, "spon": 14.8, "id": 1776020864258}, {"m": "Jan 2026", "cl": "Gonflé", "cat": "shop", "creation": 250, "vues": 250, "cout": 27, "videaste": 80, "spon": 47.35, "id": 1776021011162}, {"m": "Jan 2026", "cl": "Tranché", "cat": "shop", "creation": 0, "vues": 150, "cout": 49, "videaste": 80, "spon": 36.86, "id": 1776021187349}, {"m": "Jan 2026", "cl": "Listo", "cat": "food", "creation": 0, "vues": 250, "cout": 0, "videaste": 0, "spon": 77.57, "id": 1776021263068}, {"m": "Fév 2026", "cl": "Bistro Nova", "cat": "food", "creation": 250, "vues": 375, "cout": 51, "videaste": 80, "spon": 61.6, "id": 1776021506712}, {"m": "Fév 2026", "cl": "LE 235", "cat": "food", "creation": 250, "vues": 250, "cout": 68.6, "videaste": 150, "spon": 43.81, "id": 1776021622131}, {"m": "Fév 2026", "cl": "Carrousel", "cat": "food", "creation": 250, "vues": 500, "cout": 41.9, "videaste": 150, "spon": 98.65, "id": 1776021742028}, {"m": "Mar 2026", "cl": "Maison Renésens", "cat": "beauty", "creation": 0, "vues": 0, "cout": 0, "videaste": 150, "spon": 51.96, "id": 1776021837996}, {"m": "Mar 2026", "cl": "Bar Bickett", "cat": "shop", "creation": 250, "vues": 500, "cout": 0, "videaste": 0, "spon": 61.02, "id": 1776021915550}, {"m": "Mar 2026", "cl": "Mon P'tit Hanoï", "cat": "food", "creation": 250, "vues": 0, "cout": 48, "videaste": 0, "spon": 55.55, "id": 1776021977048}, {"m": "Mar 2026", "cl": "Anne Caron", "cat": "shop", "creation": 500, "vues": 0, "cout": 4, "videaste": 0, "spon": 85, "id": 1776022019772}, {"m": "Mar 2026", "cl": "Rituels d'Ailleurs", "cat": "beauty", "creation": 0, "vues": 500, "cout": 120, "videaste": 150, "spon": 46, "id": 1776022079644}, {"m": "Mar 2026", "cl": "La Table du Conquérant", "cat": "food", "creation": 250, "vues": 250, "cout": 84, "videaste": 0, "spon": 45, "id": 1776022144034}], "frais": [{"m": "Jan 2026", "label": "Comptable", "montant": 150, "id": 1776022563862}, {"m": "Fév 2026", "label": "Comptable", "montant": 150, "id": 1776022576434}, {"m": "Mar 2026", "label": "Comptable", "montant": 150, "id": 1776022583182}, {"m": "Déc 2025", "label": "Comptable", "montant": 150, "id": 1776022591131}, {"m": "Avr 2026", "label": "Comptable", "montant": 150, "id": 1776022607153}, {"m": "Mar 2026", "label": "Redevance EPICU", "montant": 500, "id": 1776022681398}, {"m": "Avr 2026", "label": "Redevance EPICU", "montant": 500, "id": 1776022686824}], "investissements": [], "objectif": {"mois": "Mar 2026", "val": 3000}};
+
 async function loadData(){
   // 1. Charge d'abord le local comme fallback immédiat
   try{ const s=localStorage.getItem(STORE); if(s) D=JSON.parse(s); } catch(e){}
   if(!D.investissements) D.investissements=[];
   if(!D.objectif) D.objectif={mois:'',val:0};
 
-  // 2. Si pas de BIN_ID connu, démarre vide sans erreur — le bin sera créé à la 1ère sauvegarde
+  // 2. Si pas de BIN_ID connu, charge les données seed
   if(!BIN_ID){
+    if(!D.videos || D.videos.length===0){
+      D = {...SEED_DATA};
+      if(!D.investissements) D.investissements=[];
+      localStorage.setItem(STORE, JSON.stringify(D));
+    }
     setSaveStatus('saved');
     return;
   }
